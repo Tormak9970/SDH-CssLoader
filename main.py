@@ -475,6 +475,14 @@ if __name__ == '__main__':
     asyncio.set_event_loop(asyncio.new_event_loop())
     class A:
         def run(self):
-            asyncio.get_event_loop().run_until_complete(Plugin._main(Plugin))
+            retryCount = 0
+            while retryCount < 5:
+                retryCount += 1
+                try:
+                    asyncio.get_event_loop().run_until_complete(Plugin._main(Plugin))
+                    time.sleep(5)
+                except:
+                    asyncio.set_event_loop(asyncio.new_event_loop())
+                    pass
 
     A().run()
