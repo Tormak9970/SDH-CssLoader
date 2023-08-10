@@ -28,6 +28,10 @@ interface PublicCssLoaderState {
   submissionServerFilters: FilterQueryResponse;
   submissionThemeList: ThemeQueryResponse;
 
+  // Profile Schedule Page
+  schedule: ScheduledChange[];
+  timeUpdates: TimeUpdatesDict;
+
   currentTab: string;
 
   // Api
@@ -60,6 +64,8 @@ interface PublicCssLoaderContext extends PublicCssLoaderState {
 // This class creates the getter and setter functions for all of the global state data.
 export class CssLoaderState {
   private currentTab: string = "ThemeBrowser";
+  private schedule: ScheduledChange[] = [];
+  private timeUpdates: TimeUpdatesDict = {};
   private nextUpdateCheckTime: number = 0;
   private updateCheckTimeout: NodeJS.Timeout | undefined = undefined;
 
@@ -187,6 +193,10 @@ export class CssLoaderState {
       submissionServerFilters: this.submissionServerFilters,
       submissionThemeList: this.submissionThemeList,
       backendVersion: this.backendVersion,
+
+      // Profile Schedule
+      schedule: this.schedule,
+      timeUpdates: this.timeUpdates
     };
   }
 

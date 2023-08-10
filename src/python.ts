@@ -3,6 +3,7 @@ import { ServerAPI } from "decky-frontend-lib";
 import { CssLoaderState } from "./state";
 import { Theme } from "./ThemeTypes";
 import { bulkThemeUpdateCheck } from "./logic/bulkThemeUpdateCheck";
+import { ProfileSchedule } from "./theme-manager/ProfileSchedule";
 
 var server: ServerAPI | undefined = undefined;
 export var globalState: CssLoaderState | undefined = undefined;
@@ -254,4 +255,24 @@ export function generatePresetFromThemeNames(name: string, themeNames: string[])
     name: name,
     themeNames: themeNames,
   });
+}
+
+export async function getProfileSchedule(): Promise<ScheduledChange[] | Error> {
+  const res = await server!.callPluginMethod<{}, ScheduledChange[]>("get_schedule", {});
+
+  if (res.success) {
+    return res.result;
+  } else {
+    return new Error(res.result);
+  }
+}
+
+export async function setProfileSchedule(newSchedule: ScheduledChange[]): Promise<void | Error> {
+  const res = await server!.callPluginMethod<{ schedule: ScheduledChange[] }, void>("set_schedule", { schedule: newSchedule });
+
+  if (res.success) {
+    return res.result;
+  } else {
+    return new Error(res.result);
+  }
 }

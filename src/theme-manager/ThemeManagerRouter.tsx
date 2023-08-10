@@ -6,6 +6,7 @@ import { StarredThemesPage } from "./StarredThemesPage";
 import { SubmissionsPage } from "./SubmissionBrowserPage";
 import { ThemeBrowserPage } from "./ThemeBrowserPage";
 import { UninstallThemePage } from "./UninstallThemePage";
+import { ProfileSchedule } from "./ProfileSchedule";
 
 export function ThemeManagerRouter() {
   const { apiMeData, currentTab, setGlobalState } = useCssLoaderState();
@@ -50,6 +51,11 @@ export function ThemeManagerRouter() {
             title: "Installed Themes",
             content: <UninstallThemePage />,
             id: "InstalledThemes",
+          },
+          {
+            title: "Schedule",
+            content: <ProfileSchedule />,
+            id: "ProfileSchedule"
           },
           {
             title: "Settings",

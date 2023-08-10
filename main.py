@@ -3,6 +3,7 @@ from os import path, mkdir
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+from settings import SettingsManager
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -47,6 +48,9 @@ class FileChangeHandler(FileSystemEventHandler):
         
 
 class Plugin:
+    schedule: list[dict] = None
+    settings: SettingsManager
+
     async def is_standalone(self) -> bool:
         return IS_STANDALONE
     
@@ -86,8 +90,19 @@ class Plugin:
     async def fetch_theme_path(self) -> str:
         return get_theme_path()
 
-    async def get_themes(self) -> list:
+    async def get_themes(self) -> list[dict]:
         return [x.to_dict() for x in self.themes]
+    
+    async def get_schedule(self) -> list[dict]:
+        while Plugin.schedule is None:
+          await asyncio.sleep(0.1)
+          
+        Log(f"Got schedule {Plugin.schedule}")
+        return Plugin.schedule
+    
+    async def set_schedule(self, schedule: list[dict]):
+        Plugin.schedule = schedule
+        await Plugin.set_setting(self, "schedule", Plugin.schedule)
     
     async def set_theme_state(self, name : str, state : bool, set_deps : bool = True, set_deps_value : bool = True) -> dict:
         Log(f"Setting state for {name} to {state}")
@@ -386,6 +401,37 @@ class Plugin:
             injects = x.get_all_injects()
             ALL_INJECTS.extend(injects)
 
+    async def read_settings(self) -> None:
+        """
+        Reads the json from disk
+        """
+        Plugin.settings.read()
+        Plugin.schedule = await Plugin.get_setting(self, "schedule", [])
+
+    T = TypeVar("T")
+
+    # Plugin settingsManager wrappers
+    async def get_setting(self, key, default: T) -> T:
+        """
+        Gets the specified setting from the json
+
+        :param key: The key to get
+        :param default: The default value
+        :return: The value, or default if not found
+        """
+        return Plugin.settings.getSetting(key, default)
+
+    async def set_setting(self, key, value: T) -> T:
+        """
+        Sets the specified setting in the json
+
+        :param key: The key to set
+        :param value: The value to set it to
+        :return: The new value
+        """
+        Plugin.settings.setSetting(key, value)
+        return value
+
     async def _load(self):
         Log("Loading themes...")
         self.themes = []
@@ -463,6 +509,9 @@ class Plugin:
             await self.enable_server(self)
 
         await initialize()
+
+        Plugin.settings = SettingsManager(name="settings", settings_directory=os.environ["DECKY_PLUGIN_SETTINGS_DIR"])
+        await Plugin.read_settings(self)
 
 if __name__ == '__main__':
     ALWAYS_RUN_SERVER = True
