@@ -94,12 +94,20 @@ export const ProfileSchedule: VFC<ProfileScheduleProps> = (props: ProfileSchedul
     await setProfileSchedule(schedule);
   }
 
-  // TODO: check if there are any presets. show message if not.
   // TODO: show message if no scheduledChanges already exist.
 
   return (
-    <div>
+    <>
+      {(presets.length > 0 ? (
+        // {(schedule.length === 0 ? (<div>Click the button below to start adding schedules!</div>) : (<></>))}
+        <div>
 
-    </div>
+        </div>
+      ) : (
+        <div>
+          Want to schedule themes to change throughout the day? Create a few profiles in the Theme Manager, then set up the schedules here!
+        </div>
+      ))}
+    </>
   );
 }
