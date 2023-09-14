@@ -1,4 +1,4 @@
-import { SingleDropdownOption } from "decky-frontend-lib";
+import { Patch, SingleDropdownOption } from "decky-frontend-lib";
 import { createContext, FC, useContext, useEffect, useState } from "react";
 import {
   AccountData,
@@ -7,7 +7,7 @@ import {
   ThemeQueryRequest,
   ThemeQueryResponse,
 } from "../apiTypes";
-import { Theme, UpdateStatus } from "../ThemeTypes";
+import { Theme, ThemeError, UpdateStatus } from "../ThemeTypes";
 
 interface PublicCssLoaderState {
   // Browse Page
@@ -33,6 +33,7 @@ interface PublicCssLoaderState {
   timeUpdates: TimeUpdatesDict;
 
   currentTab: string;
+  forceScrollBackUp: boolean;
 
   // Api
   selectedRepo: SingleDropdownOption;
@@ -45,9 +46,11 @@ interface PublicCssLoaderState {
   nextUpdateCheckTime: number;
   updateCheckTimeout: NodeJS.Timeout | undefined;
 
+  navPatchInstance: Patch | undefined;
   updateStatuses: UpdateStatus[];
   selectedPreset: Theme | undefined;
   localThemeList: Theme[];
+  themeErrors: ThemeError[];
   currentSettingsPageTheme: string | undefined;
   unpinnedThemes: string[];
   isInstalling: boolean;
@@ -66,8 +69,10 @@ export class CssLoaderState {
   private currentTab: string = "ThemeBrowser";
   private schedule: ScheduledChange[] = [];
   private timeUpdates: TimeUpdatesDict = {};
+  private forceScrollBackUp: boolean = false;
   private nextUpdateCheckTime: number = 0;
   private updateCheckTimeout: NodeJS.Timeout | undefined = undefined;
+  private navPatchInstance: Patch | undefined = undefined;
 
   private updateStatuses: UpdateStatus[] = [];
   private selectedPreset: Theme | undefined = undefined;
@@ -77,6 +82,7 @@ export class CssLoaderState {
   private apiTokenExpireDate: Date | number | undefined = undefined;
   private apiMeData: AccountData | undefined = undefined;
   private localThemeList: Theme[] = [];
+  private themeErrors: ThemeError[] = [];
   private selectedRepo: SingleDropdownOption = {
     data: 1,
     label: "All",
@@ -157,6 +163,7 @@ export class CssLoaderState {
   getPublicState() {
     return {
       currentTab: this.currentTab,
+      forceScrollBackUp: this.forceScrollBackUp,
       nextUpdateCheckTime: this.nextUpdateCheckTime,
       updateCheckTimeout: this.updateCheckTimeout,
       apiUrl: this.apiUrl,
@@ -167,10 +174,12 @@ export class CssLoaderState {
       updateStatuses: this.updateStatuses,
       selectedPreset: this.selectedPreset,
       localThemeList: this.localThemeList,
+      themeErrors: this.themeErrors,
       currentSettingsPageTheme: this.currentSettingsPageTheme,
       unpinnedThemes: this.unpinnedThemes,
       isInstalling: this.isInstalling,
 
+      navPatchInstance: this.navPatchInstance,
       selectedRepo: this.selectedRepo,
       currentExpandedTheme: this.currentExpandedTheme,
       browserCardSize: this.browserCardSize,

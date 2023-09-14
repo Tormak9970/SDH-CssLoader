@@ -278,6 +278,10 @@ class BrowserHook:
             return None
         raise RuntimeError("Websocket not opened")   
     
+    async def _tab_exists(self, tab_id : str):
+        result = await self.send_command("Target.getTargets", {}, None)
+        return tab_id in [x["targetId"] for x in result["result"]["targetInfos"] if x["type"] == "page"]
+
     async def on_new_tab(self):
         queue = asyncio.Queue(maxsize=MAX_QUEUE_SIZE)
         self.ws_response.append(queue) 
@@ -287,6 +291,9 @@ class BrowserHook:
             
             if "method" in message and message["method"] == "Target.targetCreated":
                 if message["params"]["targetInfo"]["type"] != "page":
+                    continue
+
+                if not await self._tab_exists(message["params"]["targetInfo"]["targetId"]):
                     continue
 
                 await self.send_command("Target.attachToTarget", {"targetId": message["params"]["targetInfo"]["targetId"], "flatten": True}, None, False)
@@ -300,6 +307,9 @@ class BrowserHook:
 
             if "method" in message and message["method"] == "Target.targetInfoChanged":
                 target_info = message["params"]["targetInfo"]
+
+                if not await self._tab_exists(message["params"]["targetInfo"]["targetId"]):
+                    continue
 
                 for connected_tab in self.connected_tabs:
                     if target_info["targetId"] == connected_tab.id:
@@ -365,7 +375,7 @@ class BrowserHook:
             await asyncio.sleep(3)
             try:
                 async with aiohttp.ClientSession() as web:
-                    res = await web.get(f"http://localhost:8080/json/version", timeout=3)
+                    res = await web.get(f"http://127.0.0.1:8080/json/version", timeout=3)
 
                 if (res.status != 200):
                     raise Exception(f"/json/version returned {res.status}")
@@ -384,7 +394,7 @@ class BrowserHook:
                             x.put_nowait(data)
 
             except Exception as e:
-                Log(f"[Browser Health Check] {str(e)}")
+                Result(False, f"[Health Check] {str(e)}")
 
             try:
                 await self.close_websocket()
@@ -404,8 +414,8 @@ def get_tabs(tab_name : str) -> List[BrowserTabHook]:
         if tab.compare(tab_name):
             tabs.append(tab)
 
-    if tabs == []:
-        Log(f"[Warn] get_tabs({tab_name}) returned []. All tabs: {str([x.title for x in HOOK.connected_tabs])}")
+    #if tabs == []:
+    #    Log(f"[Warn] get_tabs({tab_name}) returned []. All tabs: {str([x.title for x in HOOK.connected_tabs])}")
     
     return tabs
 

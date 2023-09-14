@@ -10,8 +10,10 @@ export interface UserInfo {
 export interface MinimalCSSThemeInfo {
   id: string;
   name: string;
+  displayName: string;
   version: string;
   target: string;
+  targets: string[];
   manifestVersion: number;
   specifiedAuthor: string;
   type: "Css" | "Audio";
