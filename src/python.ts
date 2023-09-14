@@ -3,7 +3,6 @@ import { ServerAPI } from "decky-frontend-lib";
 import { CssLoaderState } from "./state";
 import { Theme, ThemeError } from "./ThemeTypes";
 import { bulkThemeUpdateCheck } from "./logic/bulkThemeUpdateCheck";
-import { ProfileSchedule } from "./theme-manager/ProfileSchedule";
 
 export var server: ServerAPI | undefined = undefined;
 export var globalState: CssLoaderState | undefined = undefined;

@@ -4,11 +4,8 @@ import {
   PanelSection,
   PanelSectionRow,
   ServerAPI,
-  DialogButton,
-  Focusable,
-  Navigation,
 } from "decky-frontend-lib";
-import { useEffect, useState, FC } from "react";
+import { useEffect, useState } from "react";
 import * as python from "./python";
 import * as api from "./api";
 import { RiPaintFill } from "react-icons/ri";

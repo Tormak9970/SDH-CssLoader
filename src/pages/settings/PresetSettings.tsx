@@ -31,8 +31,8 @@ export function PresetSettings() {
   }
 
   return (
-    <div className="CSSLoader_PanelSection_NoPadding_Parent">
-      <PanelSection title="Profiles">
+    <div>
+      <Focusable>
         <PresetSelectionDropdown />
         <Focusable
           style={{ display: "flex", flexDirection: "column", gap: "0.5em", padding: "0.5em 0" }}
@@ -46,7 +46,7 @@ export function PresetSettings() {
               />
             ))}
         </Focusable>
-      </PanelSection>
+      </Focusable>
     </div>
   );
 }

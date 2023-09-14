@@ -1,5 +1,6 @@
 import { SidebarNavigation } from "decky-frontend-lib";
 import { BsFolderFill } from "react-icons/bs";
+import { GrSchedulePlay } from "react-icons/gr";
 import { RiPaintFill, RiSettings2Fill } from "react-icons/ri";
 import { ThemeSettings } from "./ThemeSettings";
 import { PresetSettings } from "./PresetSettings";
@@ -7,6 +8,7 @@ import { PluginSettings } from "./PluginSettings";
 import { Credits } from "./Credits";
 import { AiFillGithub, AiFillHeart } from "react-icons/ai";
 import { DonatePage } from "./DonatePage";
+import { ProfileSchedule } from "./ProfileSchedule";
 
 export function SettingsPageRouter() {
   return (
@@ -65,6 +67,7 @@ export function SettingsPageRouter() {
         pages={[
           { title: "Themes", icon: <RiPaintFill />, content: <ThemeSettings /> },
           { title: "Profiles", icon: <BsFolderFill />, content: <PresetSettings /> },
+          { title: "Schedules", icon: <GrSchedulePlay />, content: <ProfileSchedule /> },
           { title: "Settings", icon: <RiSettings2Fill />, content: <PluginSettings /> },
           { title: "Donate", icon: <AiFillHeart />, content: <DonatePage /> },
           { title: "Credits", icon: <AiFillGithub />, content: <Credits /> },
