@@ -1,7 +1,7 @@
 import { VFC, useEffect, useState } from "react";
-import { useCssLoaderState } from "../state";
-import { Flags, Theme } from "../ThemeTypes";
-import { changePreset, setProfileSchedule } from "../python";
+import { Flags, Theme } from "../../ThemeTypes";
+import { useCssLoaderState } from "../../state";
+import { changePreset, setProfileSchedule } from "../../python";
 
 type ProfileScheduleProps = {
 
